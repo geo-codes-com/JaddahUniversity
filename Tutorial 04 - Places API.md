@@ -1,6 +1,6 @@
-# Geocdes
+# Places
 
-* HERE MAPS API provide enables GIS Developer to create application to search for HERE Points of Interest (POIs) and get detailed Infromation about places, we will use instance from getPlacesService() to Search in HERE Places.
+* HERE MAPS API enables GIS Developer to create application to search for HERE Points of Interest (POIs) and get detailed Infromation about places, we will use instance from getPlacesService() to Search in HERE Places.
 
 * Open Visual Studio Code, Open Your Project Folder and Create a new File use places.html as file name.
 
@@ -62,7 +62,7 @@
 
 * Places in HERE are classified in category.
 
-[You Can find all places categories in the following link, change {YOUR_API_KEY} by your API Key.](https://places.ls.hereapi.com/places/v1/categories/places?at=21.422542,39.826230&apiKey={YOUR_API_KEY})
+* [You Can find all places categories in the following link, change {YOUR_API_KEY} by your API Key.](https://places.ls.hereapi.com/places/v1/categories/places?at=21.422542,39.826230&apiKey={YOUR_API_KEY})
 
 * Now we will create an Object from getPlacesService() and type the following show all hospitals around Mecca.
 
