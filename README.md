@@ -9,3 +9,5 @@
 ### [Tutorial 03 - Geocode](https://github.com/geo-codes-com/JaddahUniversity/blob/main/Tutorial%2003%20-%20Geocode.md)
 
 ### [Tutorial 04 - Places](https://github.com/geo-codes-com/JaddahUniversity/blob/main/Tutorial%2004%20-%20Places%20API.md)
+
+### [Tutorial 05 - Routing](https://github.com/geo-codes-com/JaddahUniversity/blob/main/Tutorial%2005%20-%20Routing.md)
