@@ -1,4 +1,4 @@
-# Places
+# Routing
 
 * HERE MAPS API enables GIS Developer to create application to use API that offers easy and fast routing for several regions in the world.
 
