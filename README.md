@@ -11,3 +11,5 @@
 ### [Tutorial 04 - Places](https://github.com/geo-codes-com/JaddahUniversity/blob/main/Tutorial%2004%20-%20Places%20API.md)
 
 ### [Tutorial 05 - Routing](https://github.com/geo-codes-com/JaddahUniversity/blob/main/Tutorial%2005%20-%20Routing.md)
+
+### [Tutorial 06 - Data](https://github.com/geo-codes-com/JaddahUniversity/blob/main/Tutorial%2006%20-%20Data.md)
