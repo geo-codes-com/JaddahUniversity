@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Routing</title>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
+    <link rel="stylesheet" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
+</head>
+<body>
+   <h1> Routing </h1><hr />
+   <input type="button" value="Get Route">
+   <div id="mapDiv" style="height: 400px;"></div>
+   <script>
+       var platform = new H.service.Platform({
+           'apikey':'8OixyB5XsPm9OGT4dqEEzehSBQsOPxIXzRBe90DCBwM'
+       });
+       var layers = platform.createDefaultLayers();
+       var map = new H.Map(
+           document.getElementById('mapDiv'),
+           layers.vector.normal.map,
+           {
+               zoom: 9,
+               center: {lat: 21.42222, lng: 39.82222}
+           }
+       );
+       var ui = new H.ui.UI.createDefault(map, layers);
+       var mapEvents = new H.mapevents.MapEvents(map);
+       var behavior = new H.mapevents.Behavior(mapEvents);
+
+       var router = platform.getRoutingService();
+
+       var parameters = {
+           'mode': 'fastest;car',
+           'waypoint0': 'geo!21.422542,39.826230',
+           'waypoint1': 'geo!21.433122,39.846095',
+           'representation': 'display'
+       };
+
+       router.calculateRoute(parameters, (results)=>{
+           console.log(results);
+           var route, startPoint, endPoint, routeShape, lineString ;
+           if(results.response.route){
+               route = results.response.route[0] ;
+               routeShape = route.shape ;
+               lineString = new H.geo.LineString();
+               routeShape.forEach((point)=>{
+                   var parts = point.split(',');
+                   lineString.pushLatLngAlt(parts[0], parts[1]);
+               });
+
+               startPoint = route.waypoint[0].mappedPosition ;
+               endPoint = route.waypoint[1].mappedPosition ;
+
+               let startMarker = new H.map.Marker({
+                   lat: startPoint.latitude ,
+                   lng: startPoint.longitude 
+               });
+
+               let endMarker = new H.map.Marker({
+                   lat: endPoint.latitude ,
+                   lng: endPoint.longitude
+               });
+
+               var polyline = new H.map.Polyline(lineString, {
+                   style: {fillColor: 'red',strokeColor:'blue', lineWidth: 5}
+               });
+
+               map.addObjects([polyline, startMarker, endMarker]);
+               map.getViewModel().setLookAtData({bounds: polyline.getBoundingBox()});
+           }
+       },(error)=>{
+           alert(error);
+       });
+   </script>
+</body>
+</html>

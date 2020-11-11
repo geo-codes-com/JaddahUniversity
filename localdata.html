@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> GIS Data </title>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
+<script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
+<script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
+<script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
+<link rel="stylesheet" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
+<script src="https://js.api.here.com/v3/3.1/mapsjs-data.js"></script>
+
+</head>
+<body>
+    <h1> Local Data </h1><hr />
+    <div id="mapDiv" style="height: 500px;;"></div>
+    <script>
+    var platform = new H.service.Platform({
+		'apikey': '8OixyB5XsPm9OGT4dqEEzehSBQsOPxIXzRBe90DCBwM'
+	});
+	var layers = platform.createDefaultLayers();
+	var map = new H.Map(
+		document.getElementById('mapDiv'),
+		layers.vector.normal.map,
+		{
+			zoom: 6,
+			center: {lat: 15.4321, lng: 31.4321}
+		}
+	);
+	var ui = new H.ui.UI.createDefault(map, layers);
+	var mapEvents = new H.mapevents.MapEvents(map);
+	var behavior = new H.mapevents.Behavior(mapEvents);
+
+    var class1 = {fillColor: 'rgba(255, 255, 255, 0.5)', lineWidth: 0.5, strokeColor: 'white'};
+var class2 = {fillColor: 'rgba(200, 221, 240, 0.5)', lineWidth: 0.5, strokeColor: 'white'};
+var class3 = {fillColor: 'rgba(115, 179, 216, 0.5)', lineWidth: 0.5, strokeColor: 'white'};
+var class4 = {fillColor: 'rgba(40, 121, 185, 0.5)', lineWidth: 0.5, strokeColor: 'white'};
+var class5 = {fillColor: 'rgba(8, 48, 107, 0.5)', lineWidth: 0.5, strokeColor: 'white'};
+
+var states = new H.data.geojson.Reader('states.geojson',{
+	disableLegacyMode: true,
+	style: function(mapObject){
+		if(mapObject.getData().POP_2018 <= 1045398){
+			mapObject.setStyle(class1);
+		}else if(mapObject.getData().POP_2018 <= 1527364){
+			mapObject.setStyle(class2);
+		}else if(mapObject.getData().POP_2018 <= 2150446){
+			mapObject.setStyle(class3);
+		}else if(mapObject.getData().POP_2018 <= 2503956){
+			mapObject.setStyle(class4);
+		}else if(mapObject.getData().POP_2018 <= 7993851){
+			mapObject.setStyle(class5);
+		}
+	}
+});
+states.parse();
+map.addLayer(states.getLayer());
+
+
+states.getLayer().getProvider().addEventListener('tap', (evt) => {
+	var coords = map.screenToGeo(
+		evt.currentPointer.viewportX,
+		evt.currentPointer.viewportY
+	);
+	var postion = {lat: coords.lat , lng: coords.lng};
+	var dat = evt.target.getData();
+	var bubble = new H.ui.InfoBubble(postion, {
+		content: '<b>NAME:</b>' + dat['State_En'] + '<br>' +
+		'<b>Population 2008 :</b>' + dat['POP_2008'] + '<br>' +
+		'<b>Population 2008 :</b>' + dat['POP_2018'] + '<br>'+
+		'<b>Area :</b>' + dat['Area'] + '<br>'
+	});
+	ui.addBubble(bubble);
+},false);
+
+
+    </script>
+</body>
+</html>

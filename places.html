@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Places </title>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
+    <link rel="stylesheet" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
+</head>
+<body>
+    <h1> HERE Places API </h1><hr />
+    <div id="mapDiv" style="height: 500px;"></div>
+    <script>
+        var platform = new H.service.Platform({
+            'apikey': '8OixyB5XsPm9OGT4dqEEzehSBQsOPxIXzRBe90DCBwM'
+        });
+        var layers = platform.createDefaultLayers();
+        var map = new H.Map(
+            document.getElementById('mapDiv'),
+            layers.vector.normal.map,
+            {
+                zoom: 9,
+                center: {lat: 21.54321, lng: 39.54321}
+            }
+        );
+
+        var ui = new H.ui.UI.createDefault(map, layers);
+        var x = new H.mapevents.MapEvents(map);
+        var behavior = new H.mapevents.Behavior(x);
+
+        var placesService = platform.getPlacesService();
+
+        placesService.explore({'at':'21.42222,39.82222', 'cat': 'eat-drink'}, (results)=>{
+            var items = results.results.items ;
+            items.forEach((item)=>{
+                let marker = new H.map.Marker({lat: item.position[0], lng: item.position[1]});
+                marker.setData(item.title);
+                map.addObject(marker);
+            });
+        });
+
+
+        map.addEventListener('tap', (event)=>{
+	if (event.target instanceof H.map.Marker) {
+		var bubble =  new H.ui.InfoBubble(event.target.getGeometry(), {
+			content: event.target.getData()
+		});
+		ui.addBubble(bubble);
+	}
+});
+
+    </script>
+</body>
+</html>

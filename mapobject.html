@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Map Objects </title>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
+    <link rel="stylesheet" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
+</head>
+<body>
+    <h1> Map Objects : </h1>
+    <hr />
+    <div id="mapDiv" style="height: 600px;"></div>
+    <script>
+        var platform = new H.service.Platform({
+            'apikey':'8OixyB5XsPm9OGT4dqEEzehSBQsOPxIXzRBe90DCBwM'
+        });
+        var layersObject = platform.createDefaultLayers(); 
+        var mapObject = new H.Map(
+            document.getElementById('mapDiv'),
+            layersObject.vector.normal.map,
+            {
+                zoom: 6,
+                center: {lat: 21.1234, lng: 36.1234}
+            }
+        );
+        var ui = new H.ui.UI.createDefault(mapObject, layersObject);
+        var mapEvents = new H.mapevents.MapEvents(mapObject);
+        var behavior = new H.mapevents.Behavior(mapEvents);
+
+        mapObject.addEventListener('tap', function(evt){
+            var coords = mapObject.screenToGeo(
+                evt.currentPointer.viewportX,
+                evt.currentPointer.viewportY
+            );
+            let infoBubble = new H.ui.InfoBubble(
+                {lat: coords.lat, lng: coords.lng},
+                {content: '<h3> Position </h3><hr />' + coords.lat + ' , ' + coords.lng}
+            );
+            ui.addBubble(infoBubble);
+        });
+
+        var markerPosition = {lat: 21, lng: 39};
+        var markerIcon = new H.map.Icon('hospital.png', {size:{w:20,h:20}});
+        var markerObject = new H.map.Marker(markerPosition, {icon: markerIcon});
+        mapObject.addObject(markerObject);
+
+        var coordinates = [
+            {lat: 21, lng: 38},
+            {lat: 22, lng: 38},
+            {lat: 22, lng: 37},
+            {lat: 23, lng: 39}
+        ];
+        var lineString = new H.geo.LineString();
+        coordinates.forEach(function(coords){
+            lineString.pushPoint(coords);
+        });
+        var customeStyle = {
+            strokeColor: 'green',
+            lineWidth: 5,
+            fillColor: 'rgba(200, 100, 50, 0.6)'
+        };
+        var polylineObject = new H.map.Polyline(lineString, {style: customeStyle});
+        mapObject.addObject(polylineObject);
+
+        var circleObject = new H.map.Circle({lat: 21, lng: 39}, 80000, {style: customeStyle});
+        mapObject.addObject(circleObject);
+        var rect = new H.geo.Rect(39, 21, 37, 19);
+        var rectObject = new H.map.Rect(rect, {style: customeStyle});
+        mapObject.addObject(rectObject);
+
+        var overlayRect = new H.geo.Rect(37.9579669748813231,20.6097457616721904, 40.1811611124365484,22.7199151436534592);
+        var overlayObject = new H.map.Overlay(overlayRect, 'Jeddah_Temp.jpg');
+        mapObject.addObject(overlayObject);
+    </script>
+</body>
+</html>

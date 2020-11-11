@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Geocoding </title>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
+    <link rel="stylesheet" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
+</head>
+<body>
+    <h1> Geocoding </h1><hr />
+    <input type="text" id="lat" placeholder="Latitude ..." >
+    <input type="text" id="lng" placeholder="Longitude ..." >
+    <input type="button" value=" Go to XY" onclick="goToXY();">
+    <input type="text" id="txt" placeholder="Search for Address ...">
+    <input type="button" value="Find Address" onclick="find();">
+    <div id="mapDiv" style="height: 500px;"></div>
+    <script>
+        var platform = new H.service.Platform({
+            'apikey': '8OixyB5XsPm9OGT4dqEEzehSBQsOPxIXzRBe90DCBwM'
+        });
+
+        var layers = platform.createDefaultLayers();
+
+        var map = new H.Map(
+            document.getElementById('mapDiv'),
+            layers.vector.normal.map,
+            {
+                zoom: 9,
+                center: {lat: 21.54321, lng: 39.54321}
+            }
+        );
+
+        var ui = new H.ui.UI.createDefault(map, layers);
+        var mapEvents = new H.mapevents.MapEvents(map);
+        var bahavior = new H.mapevents.Behavior(mapEvents);
+
+        var service = platform.getSearchService();
+
+       function find(){
+        var txt = document.getElementById('txt').value ;
+        service.geocode({q: txt}, (result)=>{
+            result.items.forEach((item)=>{
+                let mark = new H.map.Marker(item.position);
+                map.addObject(mark);
+            });
+        });
+
+
+       }
+
+
+       function goToXY(){
+
+           
+        var lat = document.getElementById('lat').value ;
+        var lng = document.getElementById('lng').value ;
+
+        var attext = parseFloat(lat) + ','+ parseFloat(lng);
+
+        service.reverseGeocode({at: attext}, (result)=>{
+           result.items.forEach((item)=>{
+               var ib = new H.ui.InfoBubble(item.position, 
+               {content: item.address.label});
+               ui.addBubble(ib);
+           });
+       });
+
+
+       }
+
+
+    </script>
+</body>
+</html>
